@@ -3,41 +3,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:getwidget/getwidget.dart';
 
 void main() {
-  // final Key dropdownKey = UniqueKey();
   const iconSize = 24.0;
 
   final List itemList = <String>['one', 'two', 'three', 'four', 'five', 'Six'];
 
-  // testWidgets('GFDropdown without value', (tester) async {
-  //   expect(
-  //     () => const GFDropdown(
-  //       items: null,
-  //       onChanged: null,
-  //     ),
-  //     throwsAssertionError,
-  //   );
-  // });
-
-  testWidgets('GFDropdown Item can be constructed', (tester) async {
-    const dropdownKey = Key('header');
-
-    final GFDropdown dropdown = GFDropdown(
-      key: dropdownKey,
-      items: itemList
-          .map((value) => DropdownMenuItem(
-                value: value,
-                child: Text(value),
-              ))
-          .toList(),
-      onChanged: null,
+  testWidgets('GFDropdown without value', (tester) async {
+    // `GFDropdown.items` null
+    expect(
+      () => GFDropdown(
+        items: null,
+        onChanged: (_) {},
+      ),
+      throwsAssertionError,
     );
-    final TestApp app = TestApp(dropdown);
-    await tester.pumpWidget(app);
   });
 
-   testWidgets('Dropdown button control test can be constructed', (tester) async {
+  testWidgets('Dropdown button can be constructed', (tester) async {
     const dropdownKey = Key('header');
-
     final GFDropdown dropdown = GFDropdown(
       key: dropdownKey,
       items: itemList
@@ -46,10 +28,48 @@ void main() {
                 child: Text(value),
               ))
           .toList(),
+      value: null,
       onChanged: null,
     );
     final TestApp app = TestApp(dropdown);
     await tester.pumpWidget(app);
+    expect(find.byKey(dropdownKey), findsOneWidget);
+    await tester.pump();
+    expect(app.dropdown.onChanged, null);
+    expect(app.dropdown.value, null);
+  });
+
+  testWidgets('Dropdown button control can be constructed', (tester) async {
+    const dropdownKey = Key('header');
+    String value = 'one';
+    final GFDropdown dropdown = GFDropdown(
+      key: dropdownKey,
+      items: itemList
+          .map((value) => DropdownMenuItem(
+                value: value,
+                child: Text(value),
+              ))
+          .toList(),
+      value: value,
+      onChanged: (newValue) {
+        value = newValue;
+      },
+    );
+
+    final TestApp app = TestApp(dropdown);
+    await tester.pumpWidget(app);
+
+    await tester.tap(find.text('one'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1)); // finish the menu animation
+
+    expect(value, equals('one'));
+
+    await tester.tap(find.text('Six').last);
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1)); // finish the menu animation
+
+    expect(value, equals('Six'));
   });
 
   testWidgets('GFDropdown Color Property can be constructed ', (tester) async {
