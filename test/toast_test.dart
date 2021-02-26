@@ -31,7 +31,11 @@
 //   @override
 //   Widget build(BuildContext context) => MaterialApp(
 //         home: Scaffold(
-//           body: widget.toast,
+//           body: Column(
+//             children: [
+//               widget.toast,
+//             ],
+//           ),
 //         ),
 //       );
 // }

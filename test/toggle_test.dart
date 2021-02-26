@@ -9,17 +9,6 @@ void main() {
   const enabledtextStyle = TextStyle(fontSize: 14, color: Colors.green);
   const disabledtextStyle = TextStyle(fontSize: 14, color: Colors.brown);
 
-  //   testWidgets('GFToggle without Value', (tester) async {
-  //   // `GFBUtton.shape` null or `GFBUtton.padding` null.
-  //   expect(
-  //     () => GFToggle(
-  //       value: null,
-  //       onChanged: (val){},
-  //     ),
-  //     throwsAssertionError,
-  //   );
-  // });
-
   testWidgets('Enabled & Disabled GFToggle can be constructed ',
       (tester) async {
     final GFToggle toggle = GFToggle(
@@ -60,6 +49,26 @@ void main() {
     await tester.tap(find.byKey(toggleKey));
     await tester.pump();
     await tester.pumpWidget(app);
+  });
+
+  testWidgets('onPressed is triggered on button tap', (tester) async {
+    // final List<bool> _isSelected = <bool>[false, true];
+    // final ThemeData theme = ThemeData();
+    const bool _isSelected = false;
+
+    final GFToggle toggle = GFToggle(
+      key: toggleKey,
+      value: _isSelected,
+      onChanged: (bool value) {
+        value = true;
+        // _isSelectedk = !_isSelected;;
+      },
+    );
+
+    final TestApp app = TestApp(toggle);
+    await tester.pumpWidget(app);
+    await tester.tap(find.byKey(toggleKey));
+    expect(_isSelected, isFalse);
   });
 
   testWidgets(

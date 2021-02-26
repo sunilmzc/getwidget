@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/cupertino.dart';
+// import '../rendering/mock_canvas.dart';
 
 void main() {
   final Key progressBarKey = UniqueKey();
 
-  testWidgets('GFProgressBar can be constructed : default', (tester) async {
+  testWidgets(
+      'LinearProgressIndicator GFProgressBar can be constructed : default',
+      (tester) async {
     final GFProgressBar progressBar = GFProgressBar(
       key: progressBarKey,
       percentage: 0.2,
@@ -23,12 +28,14 @@ void main() {
     await tester.pumpWidget(app);
   });
 
-  testWidgets('Circular Progress Bar can be constructed :', (tester) async {
+  testWidgets('CircularProgressIndicator ProgressBar can be constructed :',
+      (tester) async {
     final GFProgressBar progressBar = GFProgressBar(
         key: progressBarKey,
         percentage: 0.9,
         width: 100,
         radius: 90,
+        type: GFProgressType.circular,
         backgroundColor: Colors.black26,
         progressBarColor: GFColors.DANGER);
 
@@ -37,6 +44,7 @@ void main() {
     expect(app.progressBar.percentage, 0.9);
     expect(app.progressBar.width, 100);
     expect(app.progressBar.radius, 90);
+    expect(app.progressBar.type, GFProgressType.circular);
     expect(app.progressBar.backgroundColor, Colors.black26);
     expect(app.progressBar.progressBarColor, GFColors.DANGER);
 
@@ -83,6 +91,28 @@ void main() {
     await tester.pumpWidget(app);
   });
 
+  testWidgets('ProgressIndicator keeps spinning until end of time',
+      (tester) async {
+    const int animationDuration = 700;
+    final GFProgressBar progressBar = GFProgressBar(
+      key: progressBarKey,
+      percentage: 0.2,
+      type: GFProgressType.linear,
+      animationDuration: animationDuration,
+      backgroundColor: const Color(0xFFB8C7CB),
+      progressBarColor: Colors.green,
+    );
+
+    final TestApp app = TestApp(progressBar);
+    await tester.pumpWidget(app);
+    await tester.pump(const Duration(milliseconds: 5));
+    await tester.tap(find.byKey(progressBarKey));
+
+    expect(app.progressBar.animationDuration, 700);
+    await tester.pump(const Duration(milliseconds: 5));
+    expect(app.progressBar.animationDuration, animationDuration);
+  });
+
   testWidgets('GFProgressBar can be constructed with properties ',
       (tester) async {
     final GFProgressBar progressBar = GFProgressBar(
@@ -112,7 +142,7 @@ void main() {
     expect(app.progressBar.circleStartAngle, 0);
     expect(app.progressBar.backgroundColor, Colors.amber);
     expect(app.progressBar.progressBarColor, Colors.red);
-    expect(app.progressBar.animation,false);
+    expect(app.progressBar.animation, false);
     expect(app.progressBar.animationDuration, 700);
     expect(app.progressBar.autoLive, true);
     expect(app.progressBar.animateFromLastPercentage, false);
@@ -121,7 +151,7 @@ void main() {
     expect(app.progressBar.type, GFProgressType.linear);
     expect(app.progressBar.width, 300);
     expect(app.progressBar.fromRightToLeft, false);
-    expect(app.progressBar.alignment,  MainAxisAlignment.start);
+    expect(app.progressBar.alignment, MainAxisAlignment.start);
     expect(app.progressBar.clipLinearGradient, false);
 
     await tester.tap(find.byKey(progressBarKey));
