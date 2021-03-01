@@ -20,12 +20,10 @@ void main() {
 
     final TestApp app = TestApp(progressBar);
     await tester.pumpWidget(app);
+    await tester.tap(find.byKey(progressBarKey));
+
     expect(app.progressBar.percentage, 0.2);
     expect(app.progressBar.progressBarColor, Colors.green);
-
-    await tester.tap(find.byKey(progressBarKey));
-    await tester.pump();
-    await tester.pumpWidget(app);
   });
 
   testWidgets('CircularProgressIndicator ProgressBar can be constructed :',
@@ -41,16 +39,14 @@ void main() {
 
     final TestApp app = TestApp(progressBar);
     await tester.pumpWidget(app);
+    await tester.tap(find.byKey(progressBarKey));
+
     expect(app.progressBar.percentage, 0.9);
     expect(app.progressBar.width, 100);
     expect(app.progressBar.radius, 90);
     expect(app.progressBar.type, GFProgressType.circular);
     expect(app.progressBar.backgroundColor, Colors.black26);
     expect(app.progressBar.progressBarColor, GFColors.DANGER);
-
-    await tester.tap(find.byKey(progressBarKey));
-    await tester.pump();
-    await tester.pumpWidget(app);
   });
 
   testWidgets('Progress bar with leading and trailing icons:', (tester) async {
@@ -78,6 +74,8 @@ void main() {
 
     final TestApp app = TestApp(progressBar);
     await tester.pumpWidget(app);
+    await tester.tap(find.byKey(progressBarKey));
+
     expect(app.progressBar.percentage, 0.8);
     expect(app.progressBar.lineHeight, 20);
     expect(app.progressBar.alignment, align);
@@ -85,10 +83,6 @@ void main() {
     expect(app.progressBar.trailing, trailingIcons);
     expect(app.progressBar.progressBarColor, GFColors.INFO);
     expect(app.progressBar.backgroundColor, Colors.black26);
-
-    await tester.tap(find.byKey(progressBarKey));
-    await tester.pump();
-    await tester.pumpWidget(app);
   });
 
   testWidgets('ProgressIndicator keeps spinning until end of time',

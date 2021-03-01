@@ -5,11 +5,11 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 void main() {
+  final UniqueKey dropdownKey = UniqueKey();
   const iconSize = 24.0;
   final List itemList = <String>['one', 'two', 'three', 'four', 'five', 'Six'];
 
   testWidgets('Dropdown button can be constructed Null Values', (tester) async {
-    const dropdownKey = Key('header');
     final GFDropdown dropdown = GFDropdown(
       key: dropdownKey,
       items: itemList
@@ -23,8 +23,8 @@ void main() {
     );
     final TestApp app = TestApp(dropdown);
     await tester.pumpWidget(app);
-    expect(find.byKey(dropdownKey), findsOneWidget);
     await tester.pump();
+    expect(find.byKey(dropdownKey), findsOneWidget);
     expect(app.dropdown.onChanged, null);
     expect(
       app.dropdown.value,
@@ -33,7 +33,6 @@ void main() {
   });
 
   testWidgets('Dropdown button control can be constructed', (tester) async {
-    const dropdownKey = Key('header');
     String value = 'one';
     final GFDropdown dropdown = GFDropdown(
       key: dropdownKey,
@@ -54,30 +53,24 @@ void main() {
 
     await tester.pumpWidget(app);
     await tester.tap(find.text('one'));
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
 
     expect(value, equals('one'));
     await tester.tap(find.text('three').last);
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(value, equals('three'));
 
     await tester.tap(find.text('three'));
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(value, equals('three'));
 
-    await tester.pumpWidget(app);
     await tester.tap(find.text('two').last);
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(value, equals('two'));
   });
 
   testWidgets('Dropdown button can be constructed with items length',
       (tester) async {
-    const dropdownKey = Key('header');
     String dropdownValue;
     final GFDropdown dropdown = GFDropdown(
       key: dropdownKey,
@@ -95,16 +88,14 @@ void main() {
     final TestApp app = TestApp(dropdown);
     await tester.pumpWidget(app);
     expect(find.byKey(dropdownKey), findsOneWidget);
-    await tester.pump();
     expect(app.dropdown.items.length, itemList.length);
     expect(app.dropdown.value, dropdownValue);
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
+
+    await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(itemList.length, equals(6));
   });
 
   testWidgets('DropdownButton disabledHint is null by default', (tester) async {
-    const dropdownKey = Key('header');
     String value;
     final List itemLists = <String>[];
     final GFDropdown dropdown = GFDropdown(
@@ -121,7 +112,6 @@ void main() {
     );
     final TestApp app = TestApp(dropdown);
     await tester.pumpWidget(app);
-
     // [hint] should display when [items] is an empty list
     expect(find.text('hint used when disabled'), findsOneWidget);
   });
@@ -129,7 +119,6 @@ void main() {
   testWidgets(
       'DropdowwnButton hint displays when the items list is empty, items is null, and disabledHint is null',
       (tester) async {
-    const dropdownKey = Key('header');
     final List itemLists = <String>[];
     String value;
     final GFDropdown dropdown = GFDropdown(
@@ -167,7 +156,6 @@ void main() {
   });
 
   testWidgets('DropdownButton is activated with the enter key', (tester) async {
-    const dropdownKey = Key('header');
     final FocusNode focusNode = FocusNode(debugLabel: 'DropdownButton');
     String value = 'one';
     final GFDropdown dropdown = GFDropdown(
@@ -191,23 +179,19 @@ void main() {
 
     expect(focusNode.hasPrimaryFocus, isTrue);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1)); // finish the menu animation
+    await tester
+        .pumpAndSettle(const Duration(seconds: 1)); // finish the menu animation
     expect(value, equals('one'));
 
     await tester.sendKeyEvent(LogicalKeyboardKey.tab); // Focus 'two'
-    await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.enter); // Select 'two'.
-    await tester.pump();
 
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1)); // finish the menu animation
-
+    await tester
+        .pumpAndSettle(const Duration(seconds: 1)); // finish the menu animation
     expect(value, equals('two'));
   });
 
   testWidgets('DropdownButton is activated with the space key', (tester) async {
-    const dropdownKey = Key('header');
     final FocusNode focusNode = FocusNode(debugLabel: 'DropdownButton');
     String value = 'one';
     final GFDropdown dropdown = GFDropdown(
@@ -231,18 +215,15 @@ void main() {
 
     expect(focusNode.hasPrimaryFocus, isTrue);
     await tester.sendKeyEvent(LogicalKeyboardKey.space);
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1)); // finish the menu animation
+    await tester
+        .pumpAndSettle(const Duration(seconds: 1)); // finish the menu animation
     expect(value, equals('one'));
 
     await tester.sendKeyEvent(LogicalKeyboardKey.tab); // Focus 'two'
-    await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.space); // Select 'two'.
-    await tester.pump();
 
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1)); // finish the menu animation
-
+    await tester
+        .pumpAndSettle(const Duration(seconds: 1)); // finish the menu animation
     expect(value, equals('two'));
   });
 
@@ -272,7 +253,6 @@ void main() {
 
   testWidgets('DropdownButton changes selected item with arrow keys',
       (tester) async {
-    final UniqueKey dropdownKey = UniqueKey();
     final FocusNode focusNode = FocusNode(debugLabel: 'DropdownButton');
     String value = 'one';
     final GFDropdown dropdown = GFDropdown(
@@ -294,26 +274,19 @@ void main() {
     final TestApp app = TestApp(dropdown);
     await tester.pumpWidget(app);
 
-    await tester.pumpWidget(app);
-    await tester.pump();
     expect(focusNode.hasPrimaryFocus, isTrue);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1)); // finish the menu animation
+    await tester
+        .pumpAndSettle(const Duration(seconds: 1)); // finish the menu animation
     expect(value, equals('one'));
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown); // Focus 'two'.
-    await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown); // Focus 'three'.
-    await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp); // Back to 'two'.
-    await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.enter); // Select 'two'.
-    await tester.pump();
-
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1)); // finish the menu animation
+    await tester
+        .pumpAndSettle(const Duration(seconds: 1)); // finish the menu animation
 
     expect(value, equals('two'));
   });
@@ -347,20 +320,17 @@ void main() {
       ),
     );
     await tester.tap(find.text('FC Barcelona'));
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(tester.elementList(find.text('Real Madrid')), hasLength(2));
 
     await tester.pumpWidget(Container()); // reset test
 
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(tester.elementList(find.text('FC Barcelona')), hasLength(0));
   });
 
   testWidgets('GFDropdown Color Property can be constructed ', (tester) async {
-    const dropdownKey = Key('header');
-    const GFDropdown dropdown = GFDropdown(
+    final GFDropdown dropdown = GFDropdown(
       key: dropdownKey,
       items: null,
       onChanged: null,
@@ -370,9 +340,10 @@ void main() {
       focusColor: Colors.red,
     );
 
-    const TestApp app = TestApp(dropdown);
-
+    final TestApp app = TestApp(dropdown);
     await tester.pumpWidget(app);
+    await tester.tap(find.byKey(dropdownKey));
+
     expect(app.dropdown.iconDisabledColor, Colors.amber);
     expect(
       app.dropdown.iconEnabledColor,
@@ -386,15 +357,9 @@ void main() {
       app.dropdown.focusColor,
       Colors.red,
     );
-
-    await tester.tap(find.byKey(dropdownKey));
-    await tester.pump();
-
-    await tester.pumpWidget(app);
   });
   testWidgets('GFDropdown Button Property can be constructed', (tester) async {
-    const dropdownKey = Key('header');
-    const GFDropdown dropdown = GFDropdown(
+    final GFDropdown dropdown = GFDropdown(
       key: dropdownKey,
       items: null,
       isDense: true,
@@ -406,8 +371,9 @@ void main() {
       elevation: 8,
     );
 
-    const TestApp app = TestApp(dropdown);
+    final TestApp app = TestApp(dropdown);
     await tester.pumpWidget(app);
+    await tester.tap(find.byKey(dropdownKey));
 
     expect(app.dropdown.iconSize, iconSize);
     expect(app.dropdown.onChanged, null);
@@ -416,11 +382,6 @@ void main() {
     expect(app.dropdown.autofocus, false);
     expect(app.dropdown.elevation, 8);
     expect(app.dropdown.itemHeight, 40);
-
-    await tester.tap(find.byKey(dropdownKey));
-    await tester.pump();
-
-    await tester.pumpWidget(app);
   });
 }
 
