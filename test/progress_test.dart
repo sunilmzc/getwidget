@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/cupertino.dart';
-// import '../rendering/mock_canvas.dart';
 
 void main() {
   final Key progressBarKey = UniqueKey();
@@ -76,6 +75,9 @@ void main() {
     await tester.pumpWidget(app);
     await tester.tap(find.byKey(progressBarKey));
 
+    expect(find.byIcon(Icons.sentiment_dissatisfied), findsOneWidget);
+    expect(find.byIcon(Icons.sentiment_satisfied), findsOneWidget);
+
     expect(app.progressBar.percentage, 0.8);
     expect(app.progressBar.lineHeight, 20);
     expect(app.progressBar.alignment, align);
@@ -105,6 +107,7 @@ void main() {
     expect(app.progressBar.animationDuration, 700);
     await tester.pump(const Duration(milliseconds: 5));
     expect(app.progressBar.animationDuration, animationDuration);
+    
   });
 
   testWidgets('GFProgressBar can be constructed with properties ',

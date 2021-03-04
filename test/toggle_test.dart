@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+
 
 void main() {
   final Key toggleKey = UniqueKey();
@@ -24,6 +26,7 @@ void main() {
     await tester.tap(find.byKey(toggleKey));
     await tester.pumpAndSettle(const Duration(seconds: 1));
     await tester.pumpWidget(app);
+    // expect(((tester.firstWidget(find.text('on')) as Text).style).color, Colors.green);
   });
 
   testWidgets('Enabled & Disabled GFToggle can be constructed ',
@@ -114,12 +117,88 @@ void main() {
     final TestApp app = TestApp(toggle);
     await tester.pumpWidget(app);
     await tester.tap(find.byKey(toggleKey));
-    
+
     expect(app.toggle.type, type_custom);
     expect(app.toggle.borderRadius, borderRadius);
     expect(app.toggle.boxShape, boxShape);
     expect(app.toggle.onChanged, null);
     expect(app.toggle.value, null);
+  });
+
+  testWidgets('GFToggle can be set Color', (tester) async {
+    final GFToggle toggle = GFToggle(
+      key: toggleKey,
+      value: null,
+      onChanged: null,
+      enabledThumbColor: Colors.lightGreen,
+      enabledTrackColor: Colors.grey,
+      disabledTrackColor: Colors.white,
+      disabledThumbColor: Colors.white,
+    );
+
+    final TestApp app = TestApp(toggle);
+    await tester.pumpWidget(app);
+    await tester.tap(find.byKey(toggleKey));
+    expect(toggle.enabledThumbColor, Colors.lightGreen);
+    expect(
+      toggle.enabledTrackColor,
+      Colors.grey,
+    );
+    expect(
+      toggle.disabledThumbColor,
+      Colors.white,
+    );
+    expect(
+      toggle.disabledTrackColor,
+      Colors.white,
+    );
+  });
+
+  testWidgets('GFToggle with BorderRadius set', (tester) async {
+    // const  borderRadius= 30;
+    final GFToggle toggle = GFToggle(
+      key: toggleKey,
+      value: null,
+      onChanged: null,
+      borderRadius: const BorderRadius.all(Radius.circular(30)),
+    );
+
+    final TestApp app = TestApp(toggle);
+    await tester.pumpWidget(app);
+    await tester.tap(find.byKey(toggleKey));
+    expect(toggle.borderRadius, const BorderRadius.all(Radius.circular(30)));
+  });
+
+  testWidgets('Switch can toggle on tap', (WidgetTester tester) async {
+    bool value = false;
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Material(
+              child: Center(
+                child: GFToggle(
+                  key: toggleKey,
+                  value: value,
+                  onChanged: (bool newValue) {
+                    setState(() {
+                      value = newValue;
+                    });
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
+    expect(value, isFalse);
+    print(value);
+    await tester.tap(find.byKey(toggleKey));
+    expect(value, isTrue);
+    print(value);
   });
 }
 
