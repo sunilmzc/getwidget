@@ -163,8 +163,6 @@ void main() {
     expect(tester.getSize(find.byKey(key2)), const Size(40.0, 40.0));
   });
 
-  
-
   testWidgets('Radio changes mouse cursor when hovered Default click',
       (WidgetTester tester) async {
     const Key key = ValueKey<int>(1);

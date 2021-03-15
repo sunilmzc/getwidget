@@ -147,7 +147,9 @@ void main() {
     await tester.pumpWidget(buildFrame(toggleableActiveColor: colors));
     print(textColor('title'));
     expect(textColor('title'), const Color(0xdd000000));
+    await tester.tap(find.byType(GFCheckboxListTile));
   });
+
 }
 
 class TestApp extends StatefulWidget {

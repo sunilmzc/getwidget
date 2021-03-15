@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:getwidget/getwidget.dart';
@@ -218,8 +217,7 @@ void main() {
   testWidgets('GFRadioListTile control tests', (WidgetTester tester) async {
     final List<int> values = <int>[0, 1, 2];
     int groupValue = 0;
-    // Constructor parameters are required for [Radio], but they are irrelevant
-    // when searching with [find.byType].
+
     final Type radioType = const GFRadio<int>(
       value: 0,
       groupValue: 0,
